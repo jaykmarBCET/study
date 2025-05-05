@@ -4,7 +4,6 @@ import { PlayList } from "../../../models/playlist.model";
 import { Videos } from "../../../models/Video.model";
 import { grabVideo } from "../../../utils/grabList";
 import { dbConnect } from "../../../utils/dbConnect";
-import { Result } from "ytpl";
 
 dbConnect();
 
@@ -20,46 +19,45 @@ interface PlaylistRequestBody {
 const extractPlaylistId = (url: string): string => {
   try {
     const parsedUrl = new URL(url);
-    const listParam = parsedUrl.searchParams.get("list");
-    if (listParam) return listParam;
+    return parsedUrl.searchParams.get("list") || "";
   } catch {
     return "";
   }
-  return "";
 };
-
 
 export const POST = async (req: NextRequest): Promise<NextResponse> => {
   try {
     const { playlistUrl }: PlaylistRequestBody = await req.json();
-    
+
     if (!playlistUrl) {
       return NextResponse.json({ message: "Playlist URL is required" }, { status: 400 });
     }
 
     const listId = extractPlaylistId(playlistUrl);
-    
     if (!listId) {
       return NextResponse.json({ message: "Playlist ID not found in URL" }, { status: 400 });
     }
 
-    const authentication: AuthResponse = await Auth(req);
-    if (authentication.message) {
-      return NextResponse.json(authentication, { status: 400 });
-    }
-    console.log(authentication)
-
-    const user = authentication.user!;
-    const existPlayList = await PlayList.findOne({ listId, userId: user._id });
-
-    if (existPlayList) {
-      return NextResponse.json({ message: "Already created this playlist" }, { status: 400 });
+    const auth: AuthResponse = await Auth(req);
+    if (auth.message || !auth.user) {
+      return NextResponse.json(auth, { status: 401 });
     }
 
-    const grab: Result = await grabVideo(listId);
+    const userId = auth.user._id;
+
+    const existingPlaylist = await PlayList.findOne({ listId, userId });
+    if (existingPlaylist) {
+      return NextResponse.json({ message: "Playlist already exists" }, { status: 409 });
+    }
+
+    const grab = await grabVideo(listId);
+
+    if ("message" in grab) {
+      return NextResponse.json({ message: "Failed to fetch playlist", error: grab.error }, { status: 500 });
+    }
 
     const playlistData = {
-      userId: user._id,
+      userId,
       listId: grab.id,
       title: grab.title,
       TotalItems: grab.estimatedItemCount,
@@ -72,47 +70,36 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
       return NextResponse.json({ message: "Failed to create playlist" }, { status: 500 });
     }
 
-    try {
-      let video = await Videos.findOne({ listId });
+    let video = await Videos.findOne({ listId });
 
-      if (!video) {
-        const items = [...grab.items];
-        const response = await Videos.create({ listId: grab.id, items });
-        video = await Videos.findById(response._id);
-      }
-
-      return NextResponse.json({ playlist, video }, { status: 200 });
-    } catch (err: any) {
-      return NextResponse.json({ message: "Database problem", error: err.message }, { status: 500 });
+    if (!video) {
+      const items = [...grab.items];
+      video = await Videos.create({ listId: grab.id, items });
     }
 
+    return NextResponse.json({ playlist, video }, { status: 201 });
+
   } catch (error: any) {
-    console.error("Error:", error);
-    return NextResponse.json({ message: "Server problem", error: error.message }, { status: 500 });
+    console.error("POST Error:", error);
+    return NextResponse.json({ message: "Server error", error: error.message }, { status: 500 });
   }
 };
 
 export const GET = async (req: NextRequest): Promise<NextResponse> => {
   try {
-    const authentication: AuthResponse = await Auth(req);
-    if (authentication.message) {
-      return NextResponse.json(authentication, { status: 400 });
+    const auth: AuthResponse = await Auth(req);
+    if (auth.message || !auth.user) {
+      return NextResponse.json(auth, { status: 401 });
     }
 
-    const user = authentication.user;
-    if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
-
-    const allPlayList = await PlayList.find({ userId: user._id });
-
-    if (!allPlayList?.length) {
+    const allPlaylists = await PlayList.find({ userId: auth.user._id });
+    if (!allPlaylists.length) {
       return NextResponse.json({ message: "No playlists found" }, { status: 200 });
     }
 
-    return NextResponse.json({ playlist: allPlayList }, { status: 200 });
+    return NextResponse.json({ playlist: allPlaylists }, { status: 200 });
   } catch (error: any) {
-    console.error("Error:", error);
-    return NextResponse.json({ message: "Server problem", error: error.message }, { status: 500 });
+    console.error("GET Error:", error);
+    return NextResponse.json({ message: "Server error", error: error.message }, { status: 500 });
   }
 };
