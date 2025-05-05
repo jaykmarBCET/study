@@ -3,24 +3,26 @@ import { User } from "../../../models/User.model";
 import bcrypt from "bcrypt";
 import { GenerateToken } from "../../../utils/GenerateToken";
 import { dbConnect } from "../../../utils/dbConnect";
+import { IUser } from "../../../utils/type"; 
 
 dbConnect();
 
-export const POST = async (req: NextRequest) => {
+interface LoginRequestBody {
+  email: string;
+  password: string;
+}
+
+export const POST = async (req: NextRequest): Promise<NextResponse> => {
   try {
-    const { email, password } = await req.json();
+    const body: LoginRequestBody = await req.json();
+    const { email, password } = body;
 
     if (!email || !password) {
       return NextResponse.json({ message: "All fields are required" }, { status: 400 });
     }
 
-    
     console.log("Querying user with email:", email);
-
-    const user = await User.findOne({ email });
-    
-    
-    console.log("User found:", user);
+    const user: IUser | null = await User.findOne({ email });
 
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
@@ -31,16 +33,20 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json({ message: "Incorrect password" }, { status: 400 });
     }
 
-    const token = await GenerateToken(user._id);
-    const newUser = await User.findById(user._id).select("-password");
+    const token = String(GenerateToken(user._id.toString()))
 
-    const response = NextResponse.json({ message: "Successfully logged in", user: newUser });
+    const newUser = await User.findById(user._id).select("-password").lean();
+
+    const response = NextResponse.json({
+      message: "Successfully logged in",
+      user: newUser,
+    });
 
     response.cookies.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 60 * 60 * 24,
+      maxAge: 60 * 60 * 24, // 1 day in seconds
     });
 
     return response;
