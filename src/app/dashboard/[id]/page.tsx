@@ -10,13 +10,14 @@ import ReactMark from 'react-markdown';
 function Page() {
   const searchParam = useSearchParams();
   const listId = String(searchParam.get('id'));
-  const [isLoading,setIsLoading] = useState(false)
+
+  const [isLoading, setIsLoading] = useState(false);
   const { getVideoByPlayListId, videos, playlist, getData, generateNotes, notes } = useAuthStore();
   const [query, setQuery] = useState('');
   const items = videos?.items;
   const currentPlayList = playlist.find((item) => item.listId === listId);
   const { watch, setWatch } = useWatchStore();
-  const notesRef = useRef(null);
+  const notesRef = useRef<HTMLDivElement | null>(null); // ✅ Properly typed
 
   const handelWatch = useCallback((id: string) => {
     setWatch(id);
@@ -24,22 +25,23 @@ function Page() {
 
   const handelGenerateNote = useCallback(async () => {
     try {
-      setIsLoading(true)
-      await generateNotes({ query, videoUrl: String((videos?.items.find((item) => item.id === watch))?.title) });
-      setQuery("")
-      setIsLoading(false)
-      
+      setIsLoading(true);
+      await generateNotes({
+        query,
+        videoUrl: String(videos?.items.find((item) => item.id === watch)?.title),
+      });
+      setQuery("");
     } catch (error) {
-      console.log(error)
-    }finally{
-      setIsLoading(false)
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   }, [generateNotes, query, videos?.items, watch]);
 
   useEffect(() => {
     getData();
     getVideoByPlayListId(listId);
-  }, [getData, getVideoByPlayListId, listId]);
+  }, [getData, getVideoByPlayListId, listId]); 
 
   useEffect(() => {
     if (notesRef.current) {
@@ -70,17 +72,19 @@ function Page() {
             <ReactMark>{notes}</ReactMark>
           </main>
           <div className='flex gap-2 border rounded border-gray-700 justify-between items-center p-2'>
-            <input value={query}
+            <input
+              value={query}
               onChange={(e) => setQuery(e.target.value)}
               type='text'
               className='px-2 py-1 outline-0 text-sm flex-1 bg-transparent text-white'
               placeholder='Ask any problem related to this course'
             />
-            <button disabled={isLoading}
+            <button
+              disabled={isLoading}
               onClick={handelGenerateNote}
               className='btn bg-blue-500 rounded hover:bg-blue-600 px-2 py-1'
             >
-              {isLoading?"Wait...":"Generate"}
+              {isLoading ? "Wait..." : "Generate"}
             </button>
           </div>
         </div>
@@ -88,8 +92,7 @@ function Page() {
 
       {/* Video List */}
       <div className='flex max-h-42 overflow-auto justify-center gap-2 border border-gray-800 flex-wrap p-4'>
-        {items &&
-          items.length > 0 &&
+        {items && items.length > 0 &&
           items.map((video, idx) => (
             <button
               onClick={() => handelWatch(video.id)}
