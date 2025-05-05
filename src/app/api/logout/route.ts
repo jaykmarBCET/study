@@ -20,6 +20,6 @@ export const GET = async (req: NextRequest) => {
         return res;
     } catch (error) {
         console.error("Error in authentication:", error);
-        return NextResponse.json({ message: "Server error", error: error.message }, { status: 500 });
+        return NextResponse.json({ message: "Server error", error: error }, { status: 500 });
     }
 };
