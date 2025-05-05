@@ -9,3 +9,25 @@ export interface IUser extends Document {
   createdAt: Date;
   updatedAt: Date;
 }
+
+
+interface ItemsInfo extends Document{
+  title:string;
+  shortUrl:string;
+  index:number;
+  id:string;
+}
+export  interface IVideo  extends Document{
+   _id:string;
+   listId:string;
+   items:ItemsInfo[] | []
+}
+
+export interface IPlaylist extends Document{
+   userId:string;
+      listId:string;
+      title:string;
+      TotalItems:number;
+      thumbnails:string;
+      author:string;
+}
