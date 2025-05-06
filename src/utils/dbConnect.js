@@ -18,13 +18,12 @@ const dbConnect = async () => {
         // Event listener for connection errors
         connection.on("error", (error) => {
             console.error("MongoDB failed to connect", error);
-            process.exit(1); // Exit process with a failure status code
         });
 
     } catch (error) {
         // Catch any error that happens during connection
         console.error("Database server problem:", error);
-        process.exit(1); // Exit process with a failure status code
+       
     }
 };
 

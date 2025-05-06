@@ -33,7 +33,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
       return NextResponse.json({ message: "Incorrect password" }, { status: 400 });
     }
 
-    const token = String(GenerateToken(user._id.toString()))
+    const token =  await GenerateToken(user._id)
 
     const newUser = await User.findById(user._id).select("-password").lean();
 

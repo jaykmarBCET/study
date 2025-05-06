@@ -40,7 +40,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     // Generate JWT token
-    const token = (await GenerateToken(newUser._id)) as string;
+    const token = await GenerateToken(newUser._id);
 
     // Fetch user without password for response
     const user = await User.findById(newUser._id).select("-password");

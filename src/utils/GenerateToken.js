@@ -8,9 +8,10 @@ const GenerateToken = async(userId)=>{
             throw Error("not found")
         }
         const token = JWT.sign({_id:user._id,email:user.email,},process.env.JWT_SECURE_KEY,{expiresIn:'7d'})
-        return token;
+        return String(token);
     } catch (error) {
-        return "Error",error
+        console.log(error)
+        return "Error"
     }
 }
 
