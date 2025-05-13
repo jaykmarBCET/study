@@ -19,15 +19,16 @@ const SearchVideoCard: React.FC<{ video: VideoInfo }> = ({ video }) => {
       onClick={() => handleOpenWatch(video.videoId)}
     >
       <div className="flex flex-col">
-        <div className="relative w-full h-48 rounded-xl overflow-hidden">
+        <div className="relative w-full h-48 hover:border-2 hover:p-2 hover:border-gray-700 rounded-xl overflow-hidden">
           <Image
             src={video.thumbnail}
             alt={video.title}
             fill
             className="object-cover"
+          
           />
           <span className="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs px-1.5 py-0.5 rounded">
-            {video.timestamp}
+            {video.ago }
           </span>
         </div>
 

@@ -55,7 +55,7 @@ export default function Home() {
       </div>
 
      
-      <div className="flex flex-wrap gap-2 justify-center">
+      <div className="flex flex-wrap gap-4 justify-center">
         {videos.map((video, idx) => (
           <SearchVideoCard key={idx} video={video} />
         ))}

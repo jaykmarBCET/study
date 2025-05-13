@@ -28,7 +28,8 @@ export interface VideoInfo {
   seconds: number;
   timestamp: string;
   duration: Record<string, any>; 
-  age: string;
+  ago: string;
+  age:string;
   views: string;
   author: AuthorInfo;
 }

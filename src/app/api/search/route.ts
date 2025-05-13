@@ -17,9 +17,7 @@ export const GET = async (req: NextRequest) => {
       return NextResponse.json({ message: "Server configuration error" }, { status: 500 });
     }
     
-    const { data } = await axios.get(`${apiUrl}`, {
-      params: { query },
-    });
+    const { data } = await axios.get(`${apiUrl}?query=${query}`);
     
 
     return NextResponse.json(data, { status: 200 });
