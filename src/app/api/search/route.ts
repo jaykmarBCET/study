@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
+import JWT from 'jsonwebtoken'
 
 export const GET = async (req: NextRequest) => {
   const query = req.nextUrl.searchParams.get("query");
@@ -15,9 +16,9 @@ export const GET = async (req: NextRequest) => {
       console.error("Missing NEXT_PUBLIC_BACKEND_API_URL in environment");
       return NextResponse.json({ message: "Server configuration error" }, { status: 500 });
     }
-
+    const token  =   JWT.sign(query, process.env.NEXT_PUBLIC_BACKEND_SECRET_KEY!,{expiresIn:'10s'})
     const { data } = await axios.get(`${apiUrl}`, {
-      params: { query },
+      params: { query:token },
     });
     console.log(data)
 
