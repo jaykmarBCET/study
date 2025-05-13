@@ -28,13 +28,13 @@ const SearchPlaylistCard: React.FC<{ playlist: PlaylistInfo }> = ({ playlist }) 
     await addPlayList(playlist.url);
     setIsLoading(false);
   };
-  const handelNavigate = (list:string)=>{
-    router.push(`/watch/${list}`)
+  const handelNavigate = (id:string)=>{
+    router.push(`/playlist/?id=${id}`)
   }
   return (
-    <div className="w-full sm:w-80 bg-gray-900 hover:scale-105 duration-300 hover:border hover:border-gray-800 rounded-xl p-3 text-white shadow hover:shadow-lg transition">
+    <div  className="w-full sm:w-80 bg-gray-900 hover:scale-105 duration-300 hover:border hover:border-gray-800 rounded-xl p-3 text-white shadow hover:shadow-lg transition">
       {/* Thumbnail */}
-      <div className="relative w-full h-48 rounded-xl overflow-hidden mb-3">
+      <div  onClick={()=>handelNavigate(playlist.listId)} className="relative w-full h-48 rounded-xl overflow-hidden mb-3">
         <Image
           src={playlist.thumbnail}
           alt={playlist.title}
@@ -47,7 +47,7 @@ const SearchPlaylistCard: React.FC<{ playlist: PlaylistInfo }> = ({ playlist }) 
       </div>
 
       {/* Info */}
-      <div className="flex flex-col mb-3">
+      <div onClick={()=>handelNavigate(playlist.listId)} className="flex flex-col mb-3">
         <h3 className="text-sm font-semibold line-clamp-2">{playlist.title}</h3>
         <p className="text-sm text-gray-400">{playlist.author.name}</p>
       </div>
