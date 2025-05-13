@@ -20,7 +20,7 @@ export const GET = async (req: NextRequest) => {
     const { data } = await axios.get(`${apiUrl}`, {
       params: { query },
     });
-    console.log(data)
+    
 
     return NextResponse.json(data, { status: 200 });
   } catch (error: any) {
