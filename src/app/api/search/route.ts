@@ -16,9 +16,9 @@ export const GET = async (req: NextRequest) => {
       console.error("Missing NEXT_PUBLIC_BACKEND_API_URL in environment");
       return NextResponse.json({ message: "Server configuration error" }, { status: 500 });
     }
-    const token  =   JWT.sign(query, process.env.NEXT_PUBLIC_BACKEND_SECRET_KEY!,{expiresIn:'10s'})
+    
     const { data } = await axios.get(`${apiUrl}`, {
-      params: { query:token },
+      params: { query },
     });
     console.log(data)
 
