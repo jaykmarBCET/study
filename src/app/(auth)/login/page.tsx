@@ -1,19 +1,28 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../../store/AuthStore';
 import { useRouter } from 'next/navigation';
 
 function LoginPage() {
-  const { user, currentUser,login } = useAuthStore();
+  const { user, currentUser, login } = useAuthStore();
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const email = String(formData.get('email'));
-    const password = String(formData.get('password'));
-    // Assuming 'login' in your store updates the 'user' state upon successful login
-    await login({ email, password });
+
+    try {
+      setIsLoading(true)
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      const email = String(formData.get('email'));
+      const password = String(formData.get('password'));
+      // Assuming 'login' in your store updates the 'user' state upon successful login
+      await login({ email, password });
+    } catch (error) {
+      console.log(error)
+    }finally{
+      setIsLoading(false)
+    }
   };
 
   useEffect(() => {
@@ -63,7 +72,7 @@ function LoginPage() {
             type="submit"
             className="w-full border border-gray-700 text-white py-2 rounded-lg font-bold hover:bg-blue-600 transition"
           >
-            Login
+            {isLoading?"...wait":"Login"}
           </button>
         </form>
       </div>

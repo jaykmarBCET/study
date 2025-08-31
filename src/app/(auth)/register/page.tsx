@@ -1,27 +1,28 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAuthStore } from '../../store/AuthStore';
 import { useRouter } from 'next/navigation';
 
 function RegisterPage() {
 
-    const {register,user,currentUser} = useAuthStore()
+    const { register, user, currentUser } = useAuthStore()
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const router = useRouter()
-    const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const name = String(formData.get("name") )
-        const email = String(formData.get("email") )
+        const name = String(formData.get("name"))
+        const email = String(formData.get("email"))
         const password = String(formData.get("password"))
-        
-        await register({name,email,password})
+
+        await register({ name, email, password })
     };
-    if(user){
+    if (user) {
         router.push("/dashboard")
     }
-    useEffect(()=>{
+    useEffect(() => {
         currentUser()
-    },[])
+    }, [])
 
     return (
         <div className="min-h-screen  flex items-center justify-center bg-gray-900">
@@ -50,7 +51,9 @@ function RegisterPage() {
                     </div>
                     <button type="submit"
                         className="w-full border border-gray-700  text-white py-2 rounded-lg font-bold hover:bg-blue-600 transition-all duration-300">
-                        Register
+
+                        {isLoading ? "..wait" : "Register"}
+
                     </button>
                 </form>
             </div>
