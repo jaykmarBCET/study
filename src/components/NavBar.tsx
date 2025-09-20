@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useAuthStore } from '../app/store/AuthStore'
 
 export default function NavBar() {
-  const { user } = useAuthStore()
+  const { user,logout } = useAuthStore()
 
   return (
     <nav className="bg-gray-900 border border-gray-700  text-white p-4 shadow-lg">
@@ -35,6 +35,7 @@ export default function NavBar() {
               <Link href="/setting" className="hover:text-blue-400 transition">
                 Setting
               </Link>
+              <button onClick={logout}>Logout</button>
             </>
           )}
         </div>
