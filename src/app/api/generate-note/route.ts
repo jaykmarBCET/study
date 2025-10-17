@@ -18,11 +18,17 @@ export const POST = async (req: NextRequest) => {
     if (!body?.query || !body?.videoUrl) {
       return NextResponse.json({ message: "Query and videoUrl are required" }, { status: 400 });
     }
-    
+
 
     const { query, videoUrl } = body;
 
-    const prompt = `video: ${videoUrl}. Focus specifically on the aspects related to ${query}. write in small text as easy to understand make sure please one send answer not have any comment and commitment`;
+    const prompt = `
+      ## System Prompt
+      You are an AI that summarizes videos in simple, easy-to-understand English. Avoid comments, disclaimers, or meta statements. Write concise, small text focusing only on the key points related to the given topic.
+
+      ## User Prompt
+      video: ${videoUrl}. Focus specifically on the aspects related to ${query}.
+    `;
 
     const response = await askGemini(prompt);
     return NextResponse.json({ text: response }, { status: 200 });
