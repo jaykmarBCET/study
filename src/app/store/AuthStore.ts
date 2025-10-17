@@ -129,8 +129,8 @@ const useAuthStore = create<AuthStoreInfo>((set, get) => ({
     const notes = get().notes;
 
     notes.push(`
-     ${data.query}
-     \n
+     # ${data.query}
+
     ${response.data.text}
     `);
 

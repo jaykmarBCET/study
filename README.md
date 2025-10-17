@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# 🎓 Smart Study Platform
 
-First, run the development server:
+The **Smart Study Platform** integrates **YouTube playlists** with an **AI-powered chat system** to create an interactive and doubt-solving study environment — all on a single page.
+Learners can seamlessly watch course videos and ask topic-specific questions without switching between tabs or platforms.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🧩 Problem
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+While following YouTube playlists for learning, students often face doubts mid-video.
+To resolve them, they must leave the playlist or search elsewhere — breaking focus and slowing progress.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 💡 Solution
 
-To learn more about Next.js, take a look at the following resources:
+This platform merges **YouTube video learning** and **LLM-based chat assistance** into one interface.
+Users can ask contextual questions related to the video they are watching, enabling **continuous learning** without interruptions.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 Features
 
-## Deploy on Vercel
+* **Authentication System**
+  Secure user management with Register, Login, Logout, and Current User tracking.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+* **User Dashboard**
+  Add and manage YouTube playlists, track progress, and complete courses directly within the platform.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* **AI Chat Assistant**
+  Ask any question related to the current video and receive instant answers powered by LLM.
+
+---
+
+## 🛠️ Tech Stack
+
+* **Next.js**
+* **TypeScript**
+* **JavaScript**
+* **Mongoose**
+* **Tailwind CSS**
+* **Zustand**
+* **ytpl**
+* Other supporting third-party packages
+
+---
+
+
