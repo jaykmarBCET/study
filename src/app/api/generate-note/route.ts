@@ -21,7 +21,7 @@ export const POST = async (req: NextRequest) => {
 
 
     const { query, videoUrl } = body;
-
+    
     const prompt = `
       ## System Prompt
       You are an AI that summarizes videos in simple, easy-to-understand English. Avoid comments, disclaimers, or meta statements. Do not ask for transcript or video content. Write concise, small text focusing only on the key points related to the given topic, based solely on the title and URL.
