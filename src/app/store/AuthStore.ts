@@ -31,14 +31,14 @@ export interface VideoItemInfo {
 export interface VideoInfo {
   _id: string;
   listId: string;
-  items: VideoItemInfo[]|[]; 
+  items: VideoItemInfo[] | [];
 }
 
 export interface AuthStoreInfo {
   user: UserInfo | null;
-  playlist: PlaylistInfo[]; 
-  videos: VideoInfo|null; 
-  notes:string;
+  playlist: PlaylistInfo[];
+  videos: VideoInfo | null;
+  notes: string[];
   register: (data: { email: string; name: string; password: string }) => Promise<void>;
   currentUser: () => Promise<void>;
   login: (data: { email: string; password: string }) => Promise<void>;
@@ -46,14 +46,14 @@ export interface AuthStoreInfo {
   getData: () => Promise<void>;
   addPlayList: (playlistUrl: string) => Promise<void>;
   getVideoByPlayListId: (listId: string) => Promise<void>;
-  generateNotes:({query, videoUrl}:{query:string;videoUrl:string})=>Promise<void>;
+  generateNotes: ({ query, videoUrl }: { query: string; videoUrl: string }) => Promise<void>;
 }
 
 const useAuthStore = create<AuthStoreInfo>((set, get) => ({
   user: null,
   playlist: [],
-  notes:"",
-  videos: null, 
+  notes: [],
+  videos: null,
 
   register: async (data) => {
     try {
@@ -123,10 +123,18 @@ const useAuthStore = create<AuthStoreInfo>((set, get) => ({
       console.error("Get Videos Error:", error);
     }
   },
-  generateNotes:async(data)=>{
-    const response = await axios.post("/api/generate-note",data,{withCredentials:true})
-    const note = get().notes;
-    set({notes:note+"\n"+response.data.text})
+  generateNotes: async (data) => {
+    const response = await axios.post("/api/generate-note", data, { withCredentials: true });
+
+    const notes = get().notes;
+
+    notes.push(`
+     ${data.query}
+     \n
+    ${response.data.text}
+    `);
+
+    set({ notes });
   }
 }));
 

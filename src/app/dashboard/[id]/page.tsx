@@ -6,6 +6,7 @@ import { useAuthStore } from '../../store/AuthStore';
 import { useWatchStore } from '../../store/watchStore';
 import YouTubeEmbed from '../../../components/YoutubeEmbed';
 import ReactMark from 'react-markdown';
+import "./notes.css"
 
 function Page() {
   const searchParam = useSearchParams();
@@ -41,7 +42,7 @@ function Page() {
   useEffect(() => {
     getData();
     getVideoByPlayListId(listId);
-  }, [getData, getVideoByPlayListId, listId]); 
+  }, [getData, getVideoByPlayListId, listId]);
 
   useEffect(() => {
     if (notesRef.current) {
@@ -64,12 +65,19 @@ function Page() {
         </div>
 
         {/* Notes & Input Section */}
-        <div className='flex flex-col justify-between border border-gray-700 rounded-xl p-2 min-h-[24rem] max-h-[24rem]'>
+        <div className='flex  min-w-96 max-w-96 flex-col justify-between border border-gray-700 rounded-xl p-2 min-h-[24rem] max-h-[24rem]'>
           <main
             ref={notesRef}
             className='overflow-auto text-sm flex-1 mb-2 pr-1 prose prose-invert'
           >
-            <ReactMark>{notes}</ReactMark>
+            {
+              notes.map((item, idx) => (
+                <div className='border border-gray-900 px-1 py-2 notes' key={idx}>
+                  <ReactMark>{item}</ReactMark>
+
+                </div>
+              ))
+            }
           </main>
           <div className='flex gap-2 border rounded border-gray-700 justify-between items-center p-2'>
             <input
