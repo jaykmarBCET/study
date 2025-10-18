@@ -1,6 +1,6 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useAuthStore } from '../../store/AuthStore';
 import { useWatchStore } from '../../store/watchStore';
@@ -19,6 +19,8 @@ function Page() {
   const currentPlayList = playlist.find((item) => item.listId === listId);
   const { watch, setWatch } = useWatchStore();
   const notesRef = useRef<HTMLDivElement | null>(null); // ✅ Properly typed
+  const {currentUser,user}  = useAuthStore()
+  const router = useRouter()
 
   const handelWatch = useCallback((id: string) => {
     setWatch(id);
@@ -29,7 +31,7 @@ function Page() {
       setIsLoading(true);
       await generateNotes({
         query,
-        videoUrl: String(videos?.items.find((item) => item.id === watch)?.title),
+        videoUrl: String(watch),
       });
       setQuery("");
     } catch (error) {
@@ -49,6 +51,14 @@ function Page() {
       notesRef.current.scrollTop = notesRef.current.scrollHeight;
     }
   }, [notes]);
+  useEffect(()=>{
+    if(!user){
+      currentUser()
+    }
+    if(!user){
+      router.replace("/login")
+    }
+  },[])
 
   return (
     <div className='flex flex-col pt-2 gap-y-3 w-full min-h-screen bg-gray-900 text-white'>
@@ -99,7 +109,7 @@ function Page() {
       </div>
 
       {/* Video List */}
-      <div className='flex max-h-42 overflow-auto justify-center gap-2 border border-gray-800 flex-wrap p-4'>
+      <div className='flex max-h-96 overflow-auto justify-center gap-2 border border-gray-800 flex-wrap p-4'>
         {items && items.length > 0 &&
           items.map((video, idx) => (
             <button
